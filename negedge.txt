@@ -1,0 +1,51 @@
+//Design Code
+`include "negff.v"
+`include "ms_lat.v"
+
+module negff_ms(output wire qne,qms,input d,clk);
+  
+  d_ffne a1(qne, ,clk,d);
+  master_slave_dlatch a2(qms, ,clk,d);
+endmodule
+
+//Test Bench Code
+module test();
+  wire qne,qms;
+  reg d,clk;
+  
+  negff_ms DUT(qne,qms,d,clk);
+  
+  initial
+    begin
+      clk=1'b0;
+      forever #5 clk=~clk;
+    end
+  
+  initial
+    begin
+      @(posedge clk);
+      
+      @(posedge clk) d=1'b0;
+      @(posedge clk);
+      
+      @(posedge clk) d=1'b1;
+      @(posedge clk);
+      #20;
+      $finish;
+    end
+  
+  initial
+    begin
+      $timeformat(-9,0,"ns",10);
+      $monitor("time=%0t,d=%b,qms=%b,qne=%b",$time,d,qms,qne);
+    end
+  
+  initial
+    begin
+      $dumpfile("test.vcd");
+      $dumpvars(1);
+    end
+  
+endmodule
+
+
